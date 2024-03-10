@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Bank</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 100px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input, textarea, select, button {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="questionBank" style="display: block;">
+        <h2>Question Bank</h2>
+        <form id="questionForm" action="/addquestion" method="POST">
+            <label for="question">Question:</label>
+            <textarea id="question" name="question" rows="4" required></textarea>
+
+            <label for="option1">Option 1:</label>
+            <input type="text" id="option1" name="option1" required>
+
+            <label for="option2">Option 2:</label>
+            <input type="text" id="option2" name="option2" required>
+
+            <label for="option3">Option 3:</label>
+            <input type="text" id="option3" name="option3" required>
+
+            <label for="option4">Option 4:</label>
+            <input type="text" id="option4" name="option4" required>
+
+            <label for="correctOption">Correct Option:</label>
+            <select id="correctOption" name="answer" required>
+                <option value="1">Option 1</option>
+                <option value="2">Option 2</option>
+                <option value="3">Option 3</option>
+                <option value="4">Option 4</option>
+            </select>
+
+            <button type="submit">Add Question</button>
+            <button type="button" onclick="searchQuestion()">Search Question</button>
+            <button type="button" onclick="updateQuestion()">Update Question</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Homepage</title>
+</head>
+<body>
+    <div>
+        <h1>Subscription Plans</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Plan ID</th>
+                    <th>Plan Name</th>
+                    <th>Monthly Cost</th>
+                    <th>Duration</th>
+                    
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% subscription_plans.forEach(function(result) { %>
+                    <tr>
+                        <td><%= result.plan_id %></td>
+                        <td><%= result.plan_name %></td>
+                        <td><%= result.monthly_cost %></td>
+                        <td><%= result.duration %></td>
+                        
+                        <td><button onclick="buySubscription('<%= result.plan_id %>','<%= result.plan_name %>')">Buy</button></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function buySubscription(plan_id,plan_name) {
+            if(confirm("Are you sure you want to buy the "+plan_name+" subscription plan?")){
+                alert('Subscription purchased successfully! Plan ID: ' + plan_id+ ' Plan Name: ' + plan_name);
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', '/buySubscription');
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        alert('Subscription purchased successfully! Plan ID: ' + plan_id+ ' Plan Name: ' + plan_name);
+                    } else {
+                        alert('Failed to purchase subscription. Please try again later.');
+                    }
+                };
+                xhr.send(JSON.stringify({ plan_id: plan_id}));
+
+            }
+            else{
+                alert("Subscription purchase cancelled.");
+
+            }
+        }
+    </script>
+</body>
+</html> -->
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Homepage</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('background.jpg'); /* Replace with your image path */
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: slideIn 1s ease;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+            transform: scale(1.02);
+            transition: transform 0.3s ease;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Subscription Plans</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Plan ID</th>
+                    <th>Plan Name</th>
+                    <th>Monthly Cost</th>
+                    <th>Duration</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% subscription_plans.forEach(function(result) { %>
+                    <tr>
+                        <td><%= result.plan_id %></td>
+                        <td><%= result.plan_name %></td>
+                        <td><%= result.monthly_cost %></td>
+                        <td><%= result.duration %></td>
+                        <td><button onclick="buySubscription('<%= result.plan_id %>','<%= result.plan_name %>')">Buy</button></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function buySubscription(plan_id, plan_name) {
+            if(confirm("Are you sure you want to buy the " + plan_name + " subscription plan?")) {
+                alert('Subscription purchased successfully! Plan ID: ' + plan_id + ' Plan Name: ' + plan_name);
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', '/buySubscription');
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        alert('Subscription purchased successfully! Plan ID: ' + plan_id + ' Plan Name: ' + plan_name);
+                    } else {
+                        alert('Failed to purchase subscription. Please try again later.');
+                    }
+                };
+                xhr.send(JSON.stringify({ plan_id: plan_id }));
+            } else {
+                alert("Subscription purchase cancelled.");
+            }
+        }
+    </script>
+</body>
+</html>

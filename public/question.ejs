@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Questions</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding-top: 20px;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .question-item {
+            margin-bottom: 20px;
+        }
+        .question-text {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .options-list {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        .option {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .submit-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quiz Questions</h1>
+        <form id="quizForm">
+            <ul id="questionList" class="list-group">
+                <% questions.forEach(function(question, index) { %>
+                    <li class="list-group-item question-item">
+                        <div class="question-text"><%= question.question_text %></div>
+                        <ul class="options-list">
+                            <li class="option"><input type="radio" name="question_<%= index %>" value="<%= question.option1 %>"><%= question.option1 %></li>
+                            <li class="option"><input type="radio" name="question_<%= index %>" value="<%= question.option2 %>"><%= question.option2 %></li>
+                            <li class="option"><input type="radio" name="question_<%= index %>" value="<%= question.option3 %>"><%= question.option3 %></li>
+                            <li class="option"><input type="radio" name="question_<%= index %>" value="<%= question.option4 %>"><%= question.option4 %></li>
+                        </ul>
+                    </li>
+                <% }); %>
+            </ul>
+            <button type="submit" class="submit-button">Submit</button>
+        </form>
+        <div id="result" class="result"></div>
+    </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Assuming 'questions' is an array of question objects
+        var questions = JSON.parse('<%- JSON.stringify(questions) %>');
+        var quizId = '<%- quizId %>';
+
+
+        // Handle form submission
+        document.getElementById('quizForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+            var submittedAnswers = []; // To store submitted answers
+
+            // Iterate through questions to get submitted answers
+            questions.forEach(function(question, index) {
+                var selectedOption = document.querySelector(`input[name=question_${index}]:checked`);
+                submittedAnswers.push({
+                    id: question.question_id,
+                    submittedAnswer: selectedOption ? selectedOption.value : null
+                });
+            });
+
+            // Compare submitted answers with correct answers
+            var correctCount = 0;
+            var mistakes = [];
+            submittedAnswers.forEach(function(submittedAnswer) {
+                var question = questions.find(q => q.question_id === submittedAnswer.id);
+                if (question) {
+                    var correctAnswer = question.correct_answer;
+                    if (submittedAnswer.submittedAnswer === correctAnswer) {
+                        correctCount++;
+                    } else {
+                        mistakes.push({
+                            questionId: question.question_id,
+                            submittedAnswer: submittedAnswer.submittedAnswer,
+                            correctAnswer: correctAnswer
+                        });
+                    }
+                } else {
+                    console.error("Question with ID " + submittedAnswer.id + " not found.");
+                }
+            });
+
+            // Display results
+            var totalQuestions = questions.length;
+            var score = Math.round((correctCount / totalQuestions) * 100);
+            var resultHTML = `
+                <h2>Result</h2>
+                <p>Score: ${score}%</p>
+                <p>Correct Answers: ${correctCount}/${totalQuestions}</p>
+            `;
+            if (mistakes.length > 0) {
+                resultHTML += '<h3>Mistakes</h3>';
+                mistakes.forEach(function(mistake) {
+                    resultHTML += `
+                        <p>Question ${mistake.questionId}</p>
+                        <p>Submitted Answer: ${mistake.submittedAnswer}</p>
+                        <p>Correct Answer: ${mistake.correctAnswer}</p>
+                    `;
+                });
+            }
+            document.getElementById('result').innerHTML = resultHTML;
+        var attemptData = {
+        score: correctCount,
+        submittedAnswers: submittedAnswers,
+        attempt_date: new Date().toISOString(), // Current date and time in ISO format
+        quiz_id: quizId// Retrieved from the server or another source
+    };
+    // Send attemptData to the server
+    fetch('/submit-quiz-attempt', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(attemptData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        // Handle success, such as displaying a message to the user
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        // Handle errors, such as displaying an error message to the user
+    });
+
+            
+            
+        });
+    });
+</script>
+
+    
+</html>

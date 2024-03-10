@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Article</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        select, input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <form action="/addArticle" method="post">
+        <h1>Add Article</h1>
+        <label for="articleTitle">Article Title:</label>
+        <input type="text" id="articleTitle" name="articleTitle">
+
+        <label for="articleContent">Article Content:</label>
+        <textarea id="articleContent" name="articleContent" rows="6"></textarea>
+
+        <label for="category">Category:</label>
+        <select id="category" name="category">
+            <!-- Options will be populated dynamically using JavaScript -->
+        </select>
+
+        <label for="subcategory">Subcategory:</label>
+        <select id="subcategory" name="subcategory">
+            <!-- Options will be populated dynamically using JavaScript -->
+        </select>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        // Fetch categories and populate the category dropdown
+        fetch("/categories")
+            .then(response => response.json())
+            .then(categories => {
+                const categoryDropdown = document.getElementById("category");
+                categories.forEach(category => {
+                    const option = document.createElement("option");
+                    option.value = category.id;
+                    option.textContent = category.name;
+                    categoryDropdown.appendChild(option);
+                });
+            });
+
+        // Update subcategory dropdown based on selected category
+        document.getElementById("category").addEventListener("change", function() {
+            const categoryId = this.value;
+            const url = `/subcategories/${categoryId}`;
+            fetch(url)
+                .then(response => response.json())
+                .then(subcategories => {
+                    const subcategoryDropdown = document.getElementById("subcategory");
+                    // Clear existing options
+                    subcategoryDropdown.innerHTML = "";
+                    // Populate with new options
+                    subcategories.forEach(subcategory => {
+                        const option = document.createElement("option");
+                        option.value = subcategory.id;
+                        option.textContent = subcategory.name;
+                        subcategoryDropdown.appendChild(option);
+                    });
+                });
+        });
+    </script>
+</body>
+</html>

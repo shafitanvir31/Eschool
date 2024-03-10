@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose an Option</title>
+    <style>
+        /* Add an animated gradient background */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8); /* Add transparency to container */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .container h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .button-container form {
+            margin: 0 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            transition: background-color 0.3s, transform 0.3s;
+            outline: none; /* Remove focus outline */
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-3px); /* Add lift effect on hover */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(-1px); /* Slight push on click */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Choose an Option</h1>
+        <div class="button-container">
+            <form action="/home2" method="get">
+                <input type="hidden" name="username" value="<%= username %>">
+                <button type="submit">Read Articles</button>
+            </form>
+            <form action="/home" method="get">
+                <input type="hidden" name="username" value="<%= username %>">
+                <button type="submit">Give Quizzes</button>
+            </form>
+            <form action="/home3" method="get">
+                <input type="hidden" name="username" value="<%= username %>">
+                <button type="submit">Subscribe</button>
+            </form>
+            <% if (questionModifier) { %>
+            <form action="/questionadd" method="get">
+                <input type="hidden" name="username" value="<%= username %>">
+                <button type="submit">Add Questions</button>
+            </form>
+            <% } %>
+            <% if (articleModifier) { %>
+            <form action="/articleadd" method="get">
+                <input type="hidden" name="username" value="<%= username %>">
+                <button type="submit">Add Article</button>
+            </form>
+            <% } %>
+
+        </div>
+    </div>
+</body>
+
+</html>

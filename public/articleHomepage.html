@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Article Homepage</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    /* Body background */
+    body {
+      background-image: url("/images/bgimage1.jpg");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed;
+      padding-top: 20px;
+      font-family: Arial, sans-serif; /* Add a default font family */
+    }
+
+    /* Container styling with rounded corners and slight shadow */
+    .container {
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Username button formatting */
+    #usernameButton {
+      margin: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none; /* Remove underline by default */
+      color: #007bff; /* Blue by default */
+      border: none; /* Remove default border */
+      padding: 5px 10px; /* Add some padding */
+      border-radius: 5px; /* Add rounded corners */
+      background-color: rgba(0, 123, 255, 0.2); /* Light blue background */
+    }
+
+    #usernameButton:hover {
+      text-decoration: underline; /* Underline on hover */
+      color: #0056b3; /* Darker blue on hover */
+      background-color: rgba(0, 123, 255, 0.3); /* Slightly darker blue background on hover */
+    }
+
+    /* Search input field styling */
+    input[type="text"] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    /* Category and subcategory headings */
+    h2, h3 {
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    /* Category and subcategory lists with hover effects and subtle border */
+    ul.list-group {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    ul.list-group li {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer; /* Indicate clickable elements */
+    }
+
+    ul.list-group li:hover {
+      background-color: #eee;
+    }
+
+    /* Articles list with a bit more spacing and subtle divider */
+    #articleList {
+      margin-top: 20px;
+    }
+
+    #articleList li {
+      padding: 15px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    /* Animations (consider using a CSS animation library for more complex effects) */
+    .fade-in {
+      animation: fadeIn 1s ease-in-out;
+      animation-fill-mode: forwards; /* Keep element visible after animation */
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Customize animations for different sections (optional) */
+    #usernameButton {
+      animation: buttonPulse 1s infinite alternate;
+    }
+
+    @keyframes buttonPulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.05); }
+    }
+
+    .category-box {
+      animation: categorySlideIn 0.5s ease-in-right;
+    }
+
+    @keyframes categorySlideIn {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+  <div class="container fade-in">
+    <div class="row">
+      <div class="col-12 text-right">
+        <!-- Username button -->
+        <button id="usernameButton" class="btn btn-link">Username</button>
+      </div>
+      <div class="col-12">
+        <input type="text" id="searchCategory" placeholder="Search for a category">
+        <h2>Select a Category</h2>
+        <ul id="categoryList" class="list-group"></ul>
+      </div>
+      <div class="col-12">
+        <input type="text" id="searchSubcategory" placeholder="Search for a subcategory">
+        <h3>Subcategories</h3>
+        <ul id="subcategoryList" class="list-group"></ul>
+      </div>
+      <div class="col-12">
+        <h4>Articles</h4>
+        <ul id="articleList" class="list-group"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Retrieve username from URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const username = urlParams.get('username');
+      // Set the username in the username button
+      $('#usernameButton').text(username);
+
+      // Function to load categories
+      function loadCategories(searchName) {
+        $.get("/categories", { searchName: searchName }, function(data) {
+          $('#categoryList').empty();
+          data.forEach(function(category) {
+            $('#categoryList').append(`<li class="list-group-item category-item" data-id="${category.id}">${category.name}</li>`);
+          });
+        });
+      }
+
+      // Function to load subcategories
+      function loadSubcategories(categoryId, searchName) {
+        $.get(`/subcategories/${categoryId}`, { searchName: searchName }, function(data) {
+          $('#subcategoryList').empty();
+          data.forEach(function(subcategory) {
+            $('#subcategoryList').append(`<li class="list-group-item subcategory-item" data-id="${subcategory.id}">${subcategory.name}</li>`);
+          });
+        });
+      }
+
+      // Function to load articles
+      function loadArticles(subcategoryId, categoryId) {
+        $.get(`/articles/${subcategoryId}`, { categoryId: categoryId }, function(data) {
+          $('#articleList').empty();
+          data.forEach(function(article) {
+            $('#articleList').append(`<li class="list-group-item article-item" data-id="${article.id}">${article.title}</li>`);
+          });
+        });
+      }
+
+      // Initialize categories
+      loadCategories('');
+
+      // Search bar functionality for categories
+      $('#searchCategory').on('input', function() {
+        var searchName = $(this).val();
+        loadCategories(searchName);
+      });
+
+      // Search bar functionality for subcategories
+      $('#searchSubcategory').on('input', function() {
+        var searchName = $(this).val();
+        var categoryId = $('#categoryList .category-item.active').data('id'); // Get the active category
+        if (categoryId) {
+          loadSubcategories(categoryId, searchName);
+        }
+      });
+
+      // Category click event
+      $('#categoryList').on('click', '.category-item', function() {
+        var categoryId = $(this).data('id');
+        $('#categoryList .category-item').removeClass('active'); // Remove active class from all category items
+        $(this).addClass('active'); // Add active class to the clicked category item
+        loadSubcategories(categoryId);
+        // Clear the article list since the category has changed
+        $('#articleList').empty();
+      });
+
+      // Subcategory click event
+      $('#subcategoryList').on('click', '.subcategory-item', function() {
+        var subcategoryId = $(this).data('id');
+        var categoryId = $('#categoryList .category-item.active').data('id'); // Get the active category ID
+        loadArticles(subcategoryId, categoryId); // Pass category ID to loadArticles function
+      });
+
+      // Article click event
+      $('#articleList').on('click', '.article-item', function() {
+        var articleId = $(this).data('id');
+        var categoryId = $('#categoryList .category-item.active').data('id');
+        var subcategoryId = $('#subcategoryList .subcategory-item.active').data('id');
+        window.location.href = '/article/' + articleId + '?categoryId=' + categoryId;
+      });
+
+      // Redirect to user profile page on username button click
+      $('#usernameButton').on('click', function() {
+        var username = $(this).text();
+        window.location.href = '/profile/' + username; // Redirect to the user profile page
+      });
+    });
+  </script>
+</body>
+</html>

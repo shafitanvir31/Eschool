@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('/pics/1.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #ffc107;
+            margin-bottom: 30px;
+        }
+        .user-info {
+            text-align: center;
+            color: #ffc107;
+        }
+        .user-info p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .user-info p span {
+            color: #ffc107;
+        }
+        .logout-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .logout-btn:hover {
+            background-color: #0056b3;
+        }
+        .rank-info {
+            margin-top: 20px;
+            color: #ffc107;
+        }
+
+        /* Style for buttons */
+        button {
+            padding: 10px 20px;
+            background-color: #ffc107;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #ffd700;
+        }
+
+        /* Style for form inputs */
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        /* Style for forms */
+        form {
+            margin-top: 20px;
+        }
+
+        /* Hide update forms by default */
+        .update-form {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Profile</h1>
+        <div class="user-info">
+            <p><strong>Username:</strong> <span><%= user.username %></span></p>
+            <p><strong>Email:</strong> <span id="email"><%= user.email %></span> <button onclick="toggleUpdateForm('updateEmailForm')">Update Email</button></p>
+            <p><strong>Password:</strong> ******** <button onclick="toggleUpdateForm('updatePasswordForm')">Update Password</button></p>
+            <p><strong>Subscription End Date:</strong> <%= end_date %></p>
+        </div>
+        <div class="update-form" id="updateEmailForm">
+            <h2>Update Email</h2>
+            <form action="/update/email" method="post">
+                <input type="email" name="newEmail" placeholder="New Email" required>
+                <button type="submit">Update</button>
+            </form>
+        </div>
+        <div class="update-form" id="updatePasswordForm">
+            <h2>Update Password</h2>
+            <form action="/update/password" method="post">
+                <input type="password" name="currentPassword" placeholder="Current Password" required>
+                <input type="password" name="newPassword" placeholder="New Password" required>
+                <button type="submit">Update</button>
+            </form>
+        </div>
+        <% if (RESULTS.length > 0) { %>
+            <div class="rank-info">
+                <h2>Ranking</h2>
+                <ul>
+                    <% RESULTS.forEach(function(result) { %>
+                        <li><strong><%= result.category_name %>:</strong> <%= result.rank %></li>
+                    <% }); %>
+                </ul>
+            </div>
+        <% } else { %>
+            <div class="rank-info">
+                <p>Ranking information not available.</p>
+            </div>
+        <% } %>
+        <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+
+    <script>
+        function toggleUpdateForm(formId) {
+            var form = document.getElementById(formId);
+            if (form.style.display === "none") {
+                form.style.display = "block";
+            } else {
+                form.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
